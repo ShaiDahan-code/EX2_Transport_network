@@ -3,4 +3,4 @@ project(EX2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(EX2 main.cpp Execute.cpp Execute.h)
+add_executable(EX2 main.cpp Execute.cpp Execute.h MyGraph.cpp MyGraph.h GraphNode.cpp GraphNode.h)

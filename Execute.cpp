@@ -55,16 +55,21 @@ void Execute::execute(int argc, char* argv[]){
                 index++;
             }
         }
+
         else if(string(argv[index]) == "[-c]"){
             index++;
             while(index<argc && string(argv[index]) != "-i" && string(argv[index]) != "[-o]"){ // get only the input from -c flag.
                 //TODO: check what kind of input is it{rail,sprinter,tram,bus }
-                getFromFile_i(string(argv[index]));
                 index++;
             }
         }
+
         else if(string(argv[index]) == "[-o]"){
-            getFromFile_i(argv[2]);
+            index++;
+            while(index<argc && string(argv[index]) != "-i" && string(argv[index]) != "[-c]"){ // get only the input from -o flag.
+                //TODO: check what kind of input is it{rail,sprinter,tram,bus }
+                index++;
+            }
         }
 
     }

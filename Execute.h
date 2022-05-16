@@ -22,6 +22,7 @@ public:
     void getFromFile_o(string fname);
 private:
 
+
 };
 
 

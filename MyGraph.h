@@ -5,53 +5,64 @@
 #ifndef EX2_MYGRAPH_H
 #define EX2_MYGRAPH_H
 
+
 #include <string>
 #include <vector>
 #include <iostream>
-
+#include<array>
+#include <map>
 using namespace std;
 
 class MyGraph {
+// Implement a graph useing matrix
+private:
+    vector<string> vertices;
+    vector<vector<string> > bus_matrix;
+    vector<vector<string> > tram_matrix;
+public:
+     vector<vector<string>> &getBusMatrix() ;
+
+     vector<vector<string>> &getTramMatrix() ;
+
+     vector<vector<string>> &getSprinterMatrix() ;
+
+     vector<vector<string>> &getRailMatrix() ;
+
+     vector<vector<string>> &getAllWayMatrix() ;
 
 private:
-    struct Node {
-        int vertex;
-        string name;
-        vector<Node*> neighbors;
-    };
-    int numOfVertices;
-    int numOfEdges;
+    vector<vector<string> > sprinter_matrix;
+    vector<vector<string> > rail_matrix;
+    vector<vector<string> > all_way_matrix;
+    map<string, int> stop_car_time_map;
 
-//Implement a graph class
 public:
-    //Default constructor
+    map<string, int> &getStopCarTimeMap();
+
+    map<string, int> &getStopCityTimeMap();
+
+private:
+    map<string,int> stop_city_time_map;
+
+public:
     MyGraph();
+//    void removeEdge(string from, string to,string type);
+//    bool isEdge(int from, int to);
+//    vector<int> getNeighbors(int from);
+//    int getSize();
+//    void print();
 
-    //Constructor
-    MyGraph(int n);
 
-    //Destructor
-    ~MyGraph();
 
-    //Add an edge between the vertices u and v
-    void addEdge(int u, int v);
 
-    //Print the graph
-    void printGraph();
+    //Graph functions
+    int isItThere(string name,vector<vector<string> > &vec) const;
+    void addEdge(const string from, const string to,const int time,vector<vector<string> > &vec);
+    void addNewToVector(const string name,vector<vector<string> > &vec);
+    void printType(vector<vector<string> > &vec) const;
+    void addNewEdgeByType(string from,string to,int time,string name);
 
-    //Return the number of vertices
-    int getNumOfVertices();
-
-    //Return the number of edges
-    int getNumOfEdges();
-
-    //Return the adjacency list of vertex v
-    int *getAdjList(int v);
-
-    Node*
-
+    string all_object_to_string(vector<vector<string>> &vec);
 };
-
-
 
 #endif //EX2_MYGRAPH_H

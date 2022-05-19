@@ -46,11 +46,12 @@ private:
 
 public:
     MyGraph();
-//    void removeEdge(string from, string to,string type);
-//    bool isEdge(int from, int to);
-//    vector<int> getNeighbors(int from);
-//    int getSize();
-//    void print();
+
+
+    //BFS Algorithm
+    void call_BFS_By_Type(string spot);
+    vector<string> BFS_Algoritem(string start,vector<vector<string> > &vec) const;
+
 
 
 
@@ -61,6 +62,7 @@ public:
     void addNewToVector(const string name,vector<vector<string> > &vec);
     void printType(vector<vector<string> > &vec) const;
     void addNewEdgeByType(string from,string to,int time,string name);
+
 
     string all_object_to_string(vector<vector<string>> &vec);
 };

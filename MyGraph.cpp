@@ -2,7 +2,9 @@
 // Created by shai0 on 5/16/2022.
 //
 
+#include <sstream>
 #include "MyGraph.h"
+#include <queue>
 
 
 
@@ -35,17 +37,27 @@ int MyGraph::isItThere(string name, vector<vector<string>> &vec) const{
 void MyGraph::addEdge(const string from, const string to, const int time, vector<vector<string>> &vec) {
     int from_index = this->isItThere(from,vec);
     int to_index = this->isItThere(to,vec);
-
+    bool first_time = from_index || to_index;
 
     if(!from_index) {
         addNewToVector(from,vec);
     }
+
     if(!to_index) {
         addNewToVector(to,vec);
     }
     if(from.length() > 32 || to.length() > 32) {
         throw "Name is too long";
     }
+    //TODO:REVIEW Later
+//    if(first_time){
+//        int exist_time;
+//        stringstream ss(vec[from_index][to_index]);
+//        ss >> exist_time;
+//        if(exist_time > time){
+//
+//        }
+//    }
 
     from_index = this->isItThere(from,vec);
     to_index = this->isItThere(to,vec);
@@ -132,6 +144,70 @@ vector<vector<string>> &MyGraph::getRailMatrix()  {
 
 vector<vector<string>> &MyGraph::getAllWayMatrix() {
     return all_way_matrix;
+}
+
+vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<string> > &vec) const{
+    vector<string> reachable;
+    map<string,int> distance_from_start;
+    queue<string> next;
+    next.push(start);
+    int index_of_start;
+    bool is_there = false;
+    //init all Vertices to -1 , and only the start to 0
+
+    for(int i=1;i<vec.size();i++){
+        if(vec[0][i] == start){
+            distance_from_start.insert(pair<string,int>(vec[0][i],0));
+            index_of_start = i;
+            is_there = true;
+        }
+        else{
+            distance_from_start.insert(pair<string,int>(vec[0][i],-1));
+        }
+    }
+    if(is_there) {
+        while (!next.empty()) {
+            index_of_start = isItThere(next.front(), vec);
+            for (int i = 1; i < vec.size(); i++) {
+                if (vec[index_of_start][i] != "0" && index_of_start != i) {
+                    if (distance_from_start[vec[0][i]] == -1) {
+                        distance_from_start[vec[0][i]] = distance_from_start[vec[0][index_of_start]] + 1;
+                        reachable.push_back(vec[0][i]);
+                        next.push(vec[0][i]);
+                    } else {
+                        if (distance_from_start[vec[0][i]] > distance_from_start[vec[0][index_of_start]] + 1) {
+                            distance_from_start[vec[0][i]] = distance_from_start[vec[0][index_of_start]] + 1;
+                        }
+                    }
+                }
+            }
+            next.pop();
+        }
+    }
+
+
+    //print reachable
+    if(reachable.size() == 0)
+        cout << "no outbound travel" << endl;
+    else {
+        for (int i = 0; i < reachable.size(); i++) {
+            cout << reachable[i] << "\t";
+        }
+        cout << "..." << endl;
+    }
+    return reachable;
+}
+
+void MyGraph::call_BFS_By_Type(string spot) {
+    cout << "[output]\tbus: ";
+    BFS_Algoritem(spot,this->bus_matrix);
+    cout << "[output]\ttram: ";
+    BFS_Algoritem(spot,this->tram_matrix);
+    cout << "[output]\tsprinter: ";
+    BFS_Algoritem(spot,this->sprinter_matrix);
+    cout << "[output]\trail: ";
+    BFS_Algoritem(spot,this->rail_matrix);
+
 }
 
 

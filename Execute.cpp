@@ -81,13 +81,14 @@ void Execute::execute(int argc, char* argv[]){
             index++;
             while(index<argc && string(argv[index]) != "-i" && string(argv[index]) != "[-c]"){ // get only the input from -o flag.
                 writeToFile(string(argv[index]));
+                _output_file = argv[index];
                 index++;
             }
         }
 
     }
     while(command != "EXIT"){
-        cout << "[INPUT]\t";
+        cout << "[input]\t";
         cin >> command;
         if (command == "load") {
             cin>>load_file;
@@ -96,6 +97,7 @@ void Execute::execute(int argc, char* argv[]){
         }
         else if (command == "outbound") {
             cin>>city_name;
+            mg.call_BFS_By_Type(city_name);
             //outbound(city_name);
         }
         else if (command == "inbound") {
@@ -109,7 +111,7 @@ void Execute::execute(int argc, char* argv[]){
 
         }
         else if (command == "print") {
-
+            writeToFile(_output_file);
         }
         else if (command == "EXIT") {
             break;
@@ -123,7 +125,7 @@ void Execute::readFile(const string& fname, const string& type) {
     ifstream file(fname);
     cout << "file name is " << fname << endl;
     if (!file.is_open()) {
-        cerr << "File is not open" << endl;
+        cerr << "[output]\tERROR opening the specified file." << endl;
         return;
     }
 

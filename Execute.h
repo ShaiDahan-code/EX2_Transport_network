@@ -17,7 +17,7 @@
 using namespace std;
 class Execute {
 public:
-    Execute() {}
+    Execute() : _output_file("output.dat") {}
     ~Execute() {}
     void execute(int argc, char* argv[]);
 
@@ -45,7 +45,7 @@ public:
 private:
     //vector of string and the GraphNode to know if is there a station or not.
     MyGraph mg;
-
+    string _output_file;
     void writeToFile(basic_string<char> basicString);
 };
 

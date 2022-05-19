@@ -49,8 +49,8 @@ public:
 
 
     //BFS Algorithm
-    void call_BFS_By_Type(string spot);
-    vector<string> BFS_Algoritem(string start,vector<vector<string> > &vec) const;
+    void call_BFS_for_outbound(string spot);
+    vector<string> BFS_Algoritem(string start, vector<vector<std::string>> vec) const;
 
 
 
@@ -63,8 +63,11 @@ public:
     void printType(vector<vector<string> > &vec) const;
     void addNewEdgeByType(string from,string to,int time,string name);
 
+    vector<vector<string>> reverse_graph(vector<vector<string>> vec);
 
     string all_object_to_string(vector<vector<string>> &vec);
+
+    void call_BFS_for_inbound(string spot);
 };
 
 #endif //EX2_MYGRAPH_H

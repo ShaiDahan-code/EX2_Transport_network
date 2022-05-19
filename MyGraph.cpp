@@ -146,7 +146,7 @@ vector<vector<string>> &MyGraph::getAllWayMatrix() {
     return all_way_matrix;
 }
 
-vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<string> > &vec) const{
+vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<std::string>> vec) const{
     vector<string> reachable;
     map<string,int> distance_from_start;
     queue<string> next;
@@ -198,7 +198,7 @@ vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<string> > &vec
     return reachable;
 }
 
-void MyGraph::call_BFS_By_Type(string spot) {
+void MyGraph::call_BFS_for_outbound(string spot) {
     cout << "[output]\tbus: ";
     BFS_Algoritem(spot,this->bus_matrix);
     cout << "[output]\ttram: ";
@@ -207,7 +207,29 @@ void MyGraph::call_BFS_By_Type(string spot) {
     BFS_Algoritem(spot,this->sprinter_matrix);
     cout << "[output]\trail: ";
     BFS_Algoritem(spot,this->rail_matrix);
+}
 
+
+void MyGraph::call_BFS_for_inbound(string spot) {
+    cout << "[output]\tbus: ";
+    BFS_Algoritem(spot,reverse_graph(this->bus_matrix));
+    cout << "[output]\ttram: ";
+    BFS_Algoritem(spot,reverse_graph(this->tram_matrix));
+    cout << "[output]\tsprinter: ";
+    BFS_Algoritem(spot,reverse_graph(this->sprinter_matrix));
+    cout << "[output]\trail: ";
+    BFS_Algoritem(spot,reverse_graph(this->rail_matrix));
+}
+
+vector<vector<string>> MyGraph::reverse_graph(vector<vector<string>> vec) {
+    for (int i = 0; i < vec.size(); ++i) {
+        for (int j = 0; j <vec.size() ; ++j) {
+            string tmp = vec[i][j];
+            vec[i][j] = vec[j][i];
+            vec[j][i] = tmp;
+        }
+    }
+    return vec;
 }
 
 

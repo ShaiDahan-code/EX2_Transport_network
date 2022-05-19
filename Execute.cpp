@@ -97,11 +97,12 @@ void Execute::execute(int argc, char* argv[]){
         }
         else if (command == "outbound") {
             cin>>city_name;
-            mg.call_BFS_By_Type(city_name);
+            mg.call_BFS_for_outbound(city_name);
             //outbound(city_name);
         }
         else if (command == "inbound") {
             cin>>city_name;
+            mg.call_BFS_for_inbound(city_name);
             //inbound(city_name);
         }
         else if (command == "uniExpress") {

@@ -40,6 +40,9 @@ void MyGraph::addEdge(const string from, const string to, const int time, vector
     if(!from_index) {
         addNewToVector(from,vec);
     }
+//    else{
+//
+//    }
     if(!to_index) {
         addNewToVector(to,vec);
     }

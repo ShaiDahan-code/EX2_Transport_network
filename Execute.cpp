@@ -52,6 +52,7 @@ void Execute::getFromFile_i(const string& tail) {
 void Execute::execute(int argc, char* argv[]){
     int index = 1;
     string command ,load_file ,city_name;
+    string origin,destination;
 
 
     if(argc==1){
@@ -106,6 +107,8 @@ void Execute::execute(int argc, char* argv[]){
             //inbound(city_name);
         }
         else if (command == "uniExpress") {
+            cin >> origin >> destination;
+            mg.call_Dijkstra(origin, destination);
 
         }
         else if (command == "multiExpress") {

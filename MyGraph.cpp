@@ -19,12 +19,6 @@ MyGraph::MyGraph() {
     stop_city_time_map = {{"intercity", 15}, {"centraal", 10}, {"stad",5}};
 }
 
-
-
-
-
-
-
 int MyGraph::isItThere(string name, vector<vector<string>> &vec) const{
     for(int i=0;i<vec.size();i++){
         if(vec[0][i]==name){
@@ -105,6 +99,7 @@ void MyGraph::addNewEdgeByType(string from,string to,int time,string name) {
         addEdge(from,to,time,this->rail_matrix);
     }
 
+
 }
 
 map<string, int> &MyGraph::getStopCarTimeMap() {
@@ -146,7 +141,7 @@ vector<vector<string>> &MyGraph::getAllWayMatrix() {
     return all_way_matrix;
 }
 
-vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<std::string>> vec) const{
+map<string,int> MyGraph::BFS_Algoritem(string start, vector<vector<std::string>> vec) const{
     vector<string> reachable;
     map<string,int> distance_from_start;
     queue<string> next;
@@ -195,17 +190,17 @@ vector<string> MyGraph::BFS_Algoritem(string start, vector<vector<std::string>> 
         }
         cout << "..." << endl;
     }
-    return reachable;
+    return distance_from_start;
 }
 
 void MyGraph::call_BFS_for_outbound(string spot) {
     cout << "[output]\tbus: ";
     BFS_Algoritem(spot,this->bus_matrix);
-    cout << "[output]\ttram: ";
+    cout << " [output]\ttram: ";
     BFS_Algoritem(spot,this->tram_matrix);
-    cout << "[output]\tsprinter: ";
+    cout << " [output]\tsprinter: ";
     BFS_Algoritem(spot,this->sprinter_matrix);
-    cout << "[output]\trail: ";
+    cout << " [output]\trail: ";
     BFS_Algoritem(spot,this->rail_matrix);
 }
 
@@ -213,11 +208,11 @@ void MyGraph::call_BFS_for_outbound(string spot) {
 void MyGraph::call_BFS_for_inbound(string spot) {
     cout << "[output]\tbus: ";
     BFS_Algoritem(spot,reverse_graph(this->bus_matrix));
-    cout << "[output]\ttram: ";
+    cout << " [output]\ttram: ";
     BFS_Algoritem(spot,reverse_graph(this->tram_matrix));
-    cout << "[output]\tsprinter: ";
+    cout << " [output]\tsprinter: ";
     BFS_Algoritem(spot,reverse_graph(this->sprinter_matrix));
-    cout << "[output]\trail: ";
+    cout << " [output]\trail: ";
     BFS_Algoritem(spot,reverse_graph(this->rail_matrix));
 }
 
@@ -230,6 +225,111 @@ vector<vector<string>> MyGraph::reverse_graph(vector<vector<string>> vec) {
         }
     }
     return vec;
+}
+
+map<string, int> MyGraph::Dijkstra_Algoritem(string spot, string to, vector<vector<string> > &vec,int extra_time) {
+    map<string, int> distance_from_start;
+    map<string, int> how_many_stops;
+    vector<string> reachable;
+    vector<string> next;
+    vector<string> visited,unvisited;
+    queue<string> to_check;
+
+    //init all Vertices to -1 , and only the spot to 0
+    for(int i=1;i < vec.size();i++){
+        unvisited.push_back(vec[0][i]);
+        if(vec[0][i] == spot){
+            distance_from_start.insert(pair<string,int>(vec[0][i],0));
+
+            to_check.push(vec[0][i]);
+
+        }
+        else {
+            distance_from_start.insert(pair<string, int>(vec[0][i], -1));
+        }
+        how_many_stops.insert(pair<string,int>(vec[0][i],0));
+    }
+
+    vector<int> incoming;
+    string spot_to_check;
+    int count_spots = 0;
+    while(!to_check.empty()){
+        spot_to_check = to_check.front();
+        int index_of_spot_to_check = isItThere(spot_to_check,vec);
+        incoming = get_All_Incoming_Ranks(spot_to_check,vec);
+
+        // make a for loop for each in incoming
+        for(int i=0;i<incoming.size();i++){
+            if(distance_from_start[vec[0][incoming[i]]] != 0){
+                string s = vec[index_of_spot_to_check][incoming[i]].c_str();
+                int value = atoi(s.c_str());
+                if(distance_from_start[vec[0][incoming[i]]] == -1) { // in case it's infinite
+                    distance_from_start[vec[0][incoming[i]]] = distance_from_start[spot_to_check] + value;
+                    how_many_stops[vec[0][incoming[i]]] = 1;
+                    if(distance_from_start[spot_to_check] > 0){
+                        how_many_stops[vec[0][incoming[i]]] += 1;
+                    }
+                    to_check.push(vec[0][incoming[i]]);
+                }
+
+                else if(distance_from_start[vec[0][incoming[i]]] > (distance_from_start[vec[0][index_of_spot_to_check]] + value)) { // in case it's alerter init check the if it's smaller then the exist
+                    distance_from_start[vec[0][incoming[i]]] = (distance_from_start[vec[0][index_of_spot_to_check]]  + value);
+                    how_many_stops[vec[0][incoming[i]]]++;
+                }
+
+            }
+        }
+        to_check.pop();
+        visited.push_back(spot_to_check);
+    }
+
+
+    //print the result for each
+    for(int i=1;i< vec.size();i++){
+        if(distance_from_start[vec[0][i]] != -1 && how_many_stops[vec[0][i]] > 1){
+            distance_from_start[vec[0][i]] += (how_many_stops[vec[0][i]]-1)*extra_time;
+        }
+    }
+    bool is_there2 = false;
+    for (int i = 1; i < vec.size(); i++) {
+        if(vec[0][i] == to){
+            if(distance_from_start[vec[0][i]] != 0) {
+                cout << distance_from_start[vec[0][i]] << endl;
+                is_there2 = true;
+            }
+            else
+                cout << "route unavailable" << endl;
+        }
+    }
+    if(is_there2 == false)
+        cout << "route unavailable" << endl;
+
+    return distance_from_start;
+}
+
+vector<int> MyGraph::get_All_Incoming_Ranks(string spot,vector<vector<string> > &vec) {
+    vector<int> incoming;
+    int index_of_start = isItThere(spot, vec);
+    for (int i = 1; i < vec.size(); i++) {
+        if (vec[index_of_start][i] != "0" && index_of_start != i) {
+            incoming.push_back(i);
+        }
+    }
+
+
+    return incoming;
+}
+
+void MyGraph::call_Dijkstra(string from, string to) {
+    cout << "[output]\tbus: ";
+    Dijkstra_Algoritem(from,to,this->bus_matrix,stop_car_time_map["bus"]);
+    cout << " [output]\ttram: ";
+    Dijkstra_Algoritem(from,to,this->tram_matrix,stop_car_time_map["tram"]);
+    cout << " [output]\tsprinter: ";
+    Dijkstra_Algoritem(from,to,this->sprinter_matrix,stop_car_time_map["sprinter"]);
+    cout << " [output]\trail: ";
+    Dijkstra_Algoritem(from,to,this->rail_matrix,stop_car_time_map["rail"]);
+
 }
 
 

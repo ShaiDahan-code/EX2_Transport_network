@@ -50,9 +50,12 @@ public:
 
     //BFS Algorithm
     void call_BFS_for_outbound(string spot);
-    vector<string> BFS_Algoritem(string start, vector<vector<std::string>> vec) const;
+    map<string,int> BFS_Algoritem(string start, vector<vector<std::string>> vec) const;
 
-
+    //Dijkstra Algorithm
+    map<string,int> Dijkstra_Algoritem(string spot,string to, vector<vector<string> > &vec,int extra_time);
+    vector<int> get_All_Incoming_Ranks(string spot,vector<vector<string> > &vec);
+    void call_Dijkstra(string from,string to);
 
 
 
